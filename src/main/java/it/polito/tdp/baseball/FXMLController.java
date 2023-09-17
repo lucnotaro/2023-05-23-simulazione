@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import it.polito.tdp.baseball.model.Grado;
+//import it.polito.tdp.baseball.model.Grado;
 import it.polito.tdp.baseball.model.Model;
 import it.polito.tdp.baseball.model.People;
 import javafx.event.ActionEvent;
@@ -49,14 +50,42 @@ public class FXMLController {
     
     @FXML
     void doCalcolaConnesse(ActionEvent event) {
-    	
+    	this.txtResult.appendText("Numero di componenti connesse: "+this.model.getNumTotConnesse().size()+"\n\n");
     }
 
     
     
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	this.txtResult.clear();
+    	String inputAnno=this.txtYear.getText();
+    	String inputSalario=this.txtSalary.getText();
+    	if(inputAnno=="" || inputSalario=="") {
+    		this.txtResult.setText("Iserire un mumero in entrambi i campi!");
+    		return;
+    	}
+    	int anno=0;
+    	try {
+    		anno=Integer.parseInt(inputAnno);
+    	}catch (NumberFormatException nfe) {
+    		this.txtResult.setText("Iserire un numero!");
+    		return;
+    	}
+    	if(!this.model.getAllYears().contains(anno)) {
+    		this.txtResult.setText("Iserire un anno valido!");
+    		return;
+    	}
+    	int salario=0;
+    	try {
+    		salario=Integer.parseInt(inputSalario)*1000000;
+    	}catch (NumberFormatException nfe) {
+    		this.txtResult.setText("Iserire un numero!");
+    		return;
+    	}
+    	this.model.buildGraph(anno,salario);
+    	this.txtResult.appendText("Grafo creato con #V= "+this.model.getVsize()+" e #A= "+this.model.getEsize()+"\n\n");
+    	this.btnGradoMassimo.setDisable(false);
+    	this.btnConnesse.setDisable(false);
     }
 
     
@@ -68,7 +97,8 @@ public class FXMLController {
     
     @FXML
     void doGradoMassimo(ActionEvent event) {
-
+    	Grado g=this.model.getGradoMassimo();
+    	this.txtResult.appendText("Nodo di grado max: "+g.getP().getPlayerID()+", grado= "+g.getG()+"\n\n");
     }
 
     
